@@ -71,7 +71,7 @@ public class ValidateFormTest {
         $(byText("Sports")).click();
         $(byText("Music")).click();
 
-        File f1 = $("#uploadPicture").uploadFromClasspath(picture);
+        $("#uploadPicture").uploadFromClasspath(picture);
 
         $("#currentAddress").setValue(currentAddress);
         $("#state").click();
