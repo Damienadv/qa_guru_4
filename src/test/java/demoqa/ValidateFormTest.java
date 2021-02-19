@@ -6,7 +6,9 @@ import static com.codeborne.selenide.CollectionCondition.texts;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.ElementsCollection;
+import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -36,35 +38,37 @@ public class ValidateFormTest {
     @Test
     void dataAppearsInOutputBlockTest() {
 
-        firstName = "Nicky";
-        lastName = "Junior";
-        userEmail = "nicky@junior.com";
-        gender = "Male";
-        userNumber = "7908567890";
-        dayOfBirth = "30";
-        monthOfBirth = "March";
-        yearOfBirth = "2015";
-        subjectOne = "Maths";
-        subjectTwo = "English";
-        picture = "qa.jpg";
-        currentAddress = "Taganrog";
-        state = "Rajasthan";
-        city = "Jaipur";
+        Faker faker = new Faker();
+
+        String firstname = faker.name().firstName(),
+                lastname = faker.name().lastName(),
+                useremail = faker.internet().emailAddress("test"),
+                gender = "Male",
+                usernumber = faker.phoneNumber().subscriberNumber(10),
+                day = "30",
+                month = "March",
+                year = "2015",
+                subjectOne = "Maths",
+                subjectTwo = "English",
+                picture = "qa.jpg",
+                address = faker.address().fullAddress(),
+                state = "Rajasthan",
+                city = "Jaipur";
 
 
         open("https://demoqa.com/automation-practice-form");
         $(".main-header").shouldHave(text("Practice Form"));
 
         //act
-        $("#firstName").setValue(firstName);
-        $("#lastName").setValue(lastName);
-        $("#userEmail").setValue(userEmail);
+        $("#firstName").setValue(firstname);
+        $("#lastName").setValue(lastname);
+        $("#userEmail").setValue(useremail);
         $$(".custom-control-label").find(text(gender)).click();
-        $("#userNumber").setValue(userNumber);
+        $("#userNumber").setValue(usernumber);
         $("#dateOfBirthInput").click();
-        $(".react-datepicker__year-select").selectOption(yearOfBirth);
-        $(".react-datepicker__month-select").selectOption(monthOfBirth);
-        $(".react-datepicker__day--0" + dayOfBirth).click();
+        $(".react-datepicker__year-select").selectOption(year);
+        $(".react-datepicker__month-select").selectOption(month);
+        $(".react-datepicker__day--0" + day).click();
         $("#subjectsInput").setValue(subjectOne).pressEnter();
         $("#subjectsInput").setValue(subjectTwo).pressEnter();
 
@@ -73,7 +77,8 @@ public class ValidateFormTest {
 
         $("#uploadPicture").uploadFromClasspath(picture);
 
-        $("#currentAddress").setValue(currentAddress);
+        $("#currentAddress").setValue(address);
+        $("#state").scrollTo();
         $("#state").click();
         $(byText(state)).click();
         $("#city").click();
@@ -83,16 +88,16 @@ public class ValidateFormTest {
 
         //assert
         ElementsCollection elements = $$(".table-responsive tr");
-        elements.filterBy(text("Student Name")).shouldHave(texts(firstName + " " + lastName));
-        elements.filterBy(text("Student Email")).shouldHave(texts(userEmail));
+        elements.filterBy(text("Student Name")).shouldHave(texts(firstname + " " + lastname));
+        elements.filterBy(text("Student Email")).shouldHave(texts(useremail));
         elements.filterBy(text("Gender")).shouldHave(texts(gender));
-        elements.filterBy(text("Mobile")).shouldHave(texts(userNumber));
-        elements.filterBy(text("Date of Birth")).shouldHave(texts(dayOfBirth + " " + monthOfBirth + "," + yearOfBirth));
-        elements.filterBy(text("Student Email")).shouldHave(texts(userEmail));
+        elements.filterBy(text("Mobile")).shouldHave(texts(usernumber));
+        elements.filterBy(text("Date of Birth")).shouldHave(texts(day + " " + month + "," + year));
+        elements.filterBy(text("Student Email")).shouldHave(texts(useremail));
         elements.filterBy(text("Subjects")).shouldHave(texts(subjectOne), texts(subjectTwo));
         elements.filterBy(text("Hobbies")).shouldHave(texts("Sports"), texts("Music"));
         elements.filterBy(text("Picture")).shouldHave(texts(picture));
-        elements.filterBy(text("Address")).shouldHave(texts(currentAddress));
+        elements.filterBy(text("Address")).shouldHave(texts(address));
         elements.filterBy(text("State and City")).shouldHave(texts(state + " " + city));
     }
 }
