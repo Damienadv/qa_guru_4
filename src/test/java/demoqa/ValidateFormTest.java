@@ -7,8 +7,8 @@ import static com.codeborne.selenide.CollectionCondition.texts;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.ElementsCollection;
 import com.github.javafaker.Faker;
-import org.junit.jupiter.api.BeforeEach;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -17,7 +17,16 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 public class ValidateFormTest {
+    
+    //add annotation for size
+    @BeforeAll
+    static void setup() {
+        Configuration.startMaximized = true;
+    }
 
     @Test
     void dataAppearsInOutputBlockTest() {
@@ -71,6 +80,9 @@ public class ValidateFormTest {
         $(byText(city)).click();
 
         $("#submit").click();
+        
+        //add test for forms title
+        $(".modal-header").shouldHave(text("Thanks for submitting the form"));
 
         //assert
         ElementsCollection elements = $$(".table-responsive tr");
@@ -85,5 +97,12 @@ public class ValidateFormTest {
         elements.filterBy(text("Picture")).shouldHave(texts(picture));
         elements.filterBy(text("Address")).shouldHave(texts(address));
         elements.filterBy(text("State and City")).shouldHave(texts(state + " " + city));
+        
+        //add action close and test title after that
+        $("#closeLargeModal").click();
+        $(".main-header").shouldHave(text("Practice Form"));
+        
+        //or if you use hamcrest
+        assertThat($(".main-header").getText(), containsString("Practice Form"));
     }
 }
