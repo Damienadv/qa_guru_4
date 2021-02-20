@@ -19,22 +19,6 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class ValidateFormTest {
 
-    private String firstName;
-    private String lastName;
-    private String userEmail;
-    private String gender;
-    private String userNumber;
-    private String dayOfBirth;
-    private String monthOfBirth;
-    private String yearOfBirth;
-    private String subjectOne;
-    private String subjectTwo;
-    private String picture;
-    private String currentAddress;
-    private String state;
-    private String city;
-
-
     @Test
     void dataAppearsInOutputBlockTest() {
 
@@ -53,7 +37,9 @@ public class ValidateFormTest {
                 picture = "qa.jpg",
                 address = faker.address().fullAddress(),
                 state = "Rajasthan",
-                city = "Jaipur";
+                city = "Jaipur",
+                hobby1 = "Sports",
+                hobby2 = "Music";
 
 
         open("https://demoqa.com/automation-practice-form");
@@ -72,14 +58,14 @@ public class ValidateFormTest {
         $("#subjectsInput").setValue(subjectOne).pressEnter();
         $("#subjectsInput").setValue(subjectTwo).pressEnter();
 
-        $(byText("Sports")).click();
-        $(byText("Music")).click();
+        $(byText(hobby1)).click();
+        $(byText(hobby2)).click();
 
         $("#uploadPicture").uploadFromClasspath(picture);
 
         $("#currentAddress").setValue(address);
-        $("#state").scrollTo();
-        $("#state").click();
+        $("#state").scrollTo().click();
+
         $(byText(state)).click();
         $("#city").click();
         $(byText(city)).click();
